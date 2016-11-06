@@ -104,3 +104,4 @@ ENV/
 .ropeproject
 
 .idea/
+/backend/static/*.test
