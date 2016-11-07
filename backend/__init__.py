@@ -18,3 +18,4 @@ app.config.from_envvar('CS575_SETTINGS', silent=True)
 # This has to be here so that flask's circular importing works correctly
 # noinspection PyPep8,PyUnresolvedReferences
 import backend.views
+import backend.cli
