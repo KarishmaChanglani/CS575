@@ -45,12 +45,12 @@ class VisitableComposite(Visitable):
         :return: False if the visit function returned false at any point, otherwise True or None
         """
         ret = super().accept(visitor)
-        # if return is None or True
-        if ret is None or ret:
+        # if return is True or None
+        if ret or ret is None:
             for child in self.children:
                 ret = child.accept(visitor)
                 # if return is False
-                if ret is not None and not ret:
+                if not ret and ret is not None:
                     break
         return ret
 

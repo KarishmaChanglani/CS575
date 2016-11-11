@@ -24,13 +24,13 @@ class TestObservable(observer.Observable):
     def execute(self, event):
         self._notify(event)
 
-    @observer.notify(pre=True)
-    def decorated_pre(self):
-        return
+    @observer.notify(pre="pre {}")
+    def decorated_pre(self, arg):
+        return arg
 
-    @observer.notify(post=True)
-    def decorated_post(self):
-        return
+    @observer.notify(post="post {} {}")
+    def decorated_post(self, arg):
+        return arg + 1
 
 
 class ObserverTestCase(unittest.TestCase):
@@ -83,17 +83,17 @@ class ObserverTestCase(unittest.TestCase):
         sub.register(ob)
 
         # Test pre-execution
-        sub.decorated_pre()
+        sub.decorated_pre(1)
         event = ob.pop_event()
         assert event.pre
-        assert event.message == sub.decorated_pre.__name__
+        assert event.message == "pre 1"
         assert event.data == sub.decorated_pre.__qualname__
 
         # Test post-execution
-        sub.decorated_post()
+        sub.decorated_post(1)
         event = ob.pop_event()
         assert event.post
-        assert event.message == sub.decorated_post.__name__
+        assert event.message == "post 2 1"
         assert event.data == sub.decorated_post.__qualname__
 
 

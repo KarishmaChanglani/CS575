@@ -107,20 +107,21 @@ class Observable:
         self._notify(ErrorEvent(error))
 
 
-def notify(pre=False, post=False):
+def notify(pre="", post=""):
     """
     Wrapper for Observable object to easily add observations to methods
-    :param pre: Whether to notify objects before the execution of this method
-    :param post: Whether to notify objects after the execution of this method
+    :param pre: Format string for notification message. Does not notify if empty string. Passes in args and kwargs
+    :param post: Format string for notification message. Does not notify if empty string. Passes in return value
+        followed by args and kwargs (so arg indices are off by one compared to pre)
     """
     def wrapper(f):
         @wraps(f)
         def wrapped(self, *args, **kwargs):
             if pre:
-                self._notify(MethodEvent(f, pre=True))
+                self._notify(MethodEvent(pre.format(*args, **kwargs), f, pre=True))
             ret = f(self, *args, **kwargs)
             if post:
-                self._notify(MethodEvent(f, pre=False))
+                self._notify(MethodEvent(post.format(ret, *args, **kwargs), f, pre=False))
             return ret
         return wrapped
     return wrapper
@@ -162,9 +163,9 @@ class MethodEvent(Event):
     :param pre: Default True. Whether this event is from before the function's execution or after. The attribute 'post'
         stores the opposite of this condition.
     """
-    def __init__(self, function, pre=True):
+    def __init__(self, message, function, pre=True):
+        super().__init__(message, function.__qualname__)
         self.pre = pre
-        super().__init__(function.__name__, function.__qualname__)
 
     @property
     def post(self):
