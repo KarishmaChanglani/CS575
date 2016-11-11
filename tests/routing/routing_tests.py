@@ -1,6 +1,5 @@
 import unittest
-
-from backend import app
+from backend.routing import app
 
 
 class FlaskTestCase(unittest.TestCase):

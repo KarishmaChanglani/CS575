@@ -1,4 +1,5 @@
 #!/usr/bin/python3
-from backend import app
+from routing import app
+from backend.server import Server
 
-app.run(host="0.0.0.0", debug=True)
+Server(app).run()

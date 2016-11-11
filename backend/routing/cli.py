@@ -1,6 +1,6 @@
 import click
 
-from backend import app
+from routing import app
 
 
 @app.cli.command()
