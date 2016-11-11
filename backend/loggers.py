@@ -1,5 +1,6 @@
 import logging
 from abc import *
+from logging.handlers import TimedRotatingFileHandler
 
 from backend.abstract.observer import Observer
 
@@ -9,23 +10,39 @@ class PrintLogger(Observer):
         print(event.message, event.data)
 
 
-class ConsoleLogger(Observer, metaclass=ABCMeta):
-    def __init__(self, level=None, *args, **kwargs):
+class PyLogger(Observer):
+    def __init__(self, logger, handler, fmt='%(asctime)s - %(ip)-15s %(levelname)-8s %(message)s', level=None, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.logger = logging.getLogger("console")
-        if not self.logger.hasHandlers():
+        self.logger = logger
+        if not self.logger.handlers:
             self.logger.propagate = False
-            self.logger.addHandler(logging.StreamHandler())
+            handler.setFormatter(logging.Formatter(fmt))
+            self.logger.addHandler(handler)
         if level is not None:
             self.logger.setLevel(level)
 
+    def __getattr__(self, item):
+        return getattr(self.logger, item)
 
-class FileLogger(Observer, metaclass=ABCMeta):
-    def __init__(self, file, level=None, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.logger = logging.getLogger(str(file))
-        if not self.logger.hasHandlers():
-            self.logger.propagate = False
-            self.logger.addHandler(logging.StreamHandler())
-        if level is not None:
-            self.logger.setLevel(level)
+    def _notify(self, event):
+        self.debug(str(event.message), extra={"ip": "123.456.789.012"})
+
+
+class ConsoleLogger(PyLogger):
+    def __init__(self, *args, **kwargs):
+        super().__init__(
+            logging.getLogger("console"),
+            logging.StreamHandler(),
+            *args,
+            **kwargs
+        )
+
+
+class FileLogger(PyLogger):
+    def __init__(self, file, *args, **kwargs):
+        super().__init__(
+            logging.getLogger("console"),
+            TimedRotatingFileHandler(file, when='midnight'),
+            *args,
+            **kwargs
+        )
