@@ -31,6 +31,14 @@ class SampleClass(Observable):
     def notify_err(self):
         raise TEST_ERR
 
+    @try_mapped
+    def mapped_val(self, a, b):
+        return a + b
+
+    @try_mapped
+    def mapped_err(self, a, b):
+        raise TEST_ERR
+
 
 class TryTestCase(unittest.TestCase):
     def test_success(self):
@@ -103,3 +111,12 @@ class DecoratorTestCase(unittest.TestCase):
         assert err.failure
         assert err.error == TEST_ERR
         assert ob.pop_event().data == TEST_ERR
+
+    def test_mapped_wrapper(self):
+        test = SampleClass()
+        assert test.mapped_val(1, 2).value == 3
+        assert test.mapped_val(1, Try.Success(2)).value == 3
+        assert test.mapped_val(1, Try.Failure(TEST_ERR)).error == TEST_ERR
+        assert test.mapped_val(Try.Failure(TEST_ERR), Try.Failure(AssertionError("foo"))).error == TEST_ERR
+        assert test.mapped_err(1, 2).error == TEST_ERR
+        assert test.mapped_err(Try.Failure(AssertionError("foo")), 2).error != TEST_ERR

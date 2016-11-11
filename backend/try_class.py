@@ -71,6 +71,9 @@ class ObservedTry(Try, Observable):
 
 
 def try_method(f):
+    """
+    Decorator to wrap method execution in a Try
+    """
     @wraps(f)
     def wrapped(*args, **kwargs):
         return Try(lambda: f(*args, **kwargs))
@@ -78,7 +81,29 @@ def try_method(f):
 
 
 def try_notify(f):
+    """
+    Decorator to wrap method execution in an observable try with the object's observers
+    """
     @wraps(f)
     def wrapped(self, *args, **kwargs):
         return ObservedTry(lambda: f(self, *args, **kwargs), observers=self.observers)
+    return wrapped
+
+
+def try_mapped(f):
+    """
+    Decorator to execute function only if all "Try" arguments are successes. Passes arguments through unpacked from
+    their Try classes. Returns result as a Try, and only first error is kept if multiple arguments had errors.
+    """
+    @wraps(f)
+    def wrapped(*args, **kwargs):
+        arg_failures = list(filter(lambda a: isinstance(a, Try) and a.failure, args))
+        arg_failures += list(filter(lambda v: isinstance(v, Try) and v.failure, kwargs.values()))
+        if arg_failures:
+            return arg_failures[0]
+        else:
+            return try_method(f)(
+                *(a.value if isinstance(a, Try) else a for a in args),
+                **{k: (v.value if isinstance(v, Try) else v) for k, v in kwargs}
+            )
     return wrapped
