@@ -1,4 +1,4 @@
-from backend.abstract.observer import Observable
+from backend.abstract.observer import Observable, Event
 from backend.try_class import try_notify
 
 
@@ -8,7 +8,7 @@ class Server(Observable):
         self.routing = routing
 
     def run(self):
-        self.routing.run(host="0.0.0.0", debug=True)
+        self.routing.run(host="0.0.0.0", debug=False, use_reloader=False)
 
 
 class ServerFactory(Observable):
@@ -36,6 +36,7 @@ class ServerFactory(Observable):
         if missing:
             raise InitializationError("Attempted to initialize with missing parameters: {}".format(missing))
         else:
+            self._notify(Event("Successfully built server", ""))
             return Server(**self.params)
 
 
