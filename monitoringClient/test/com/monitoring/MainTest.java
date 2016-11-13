@@ -2,7 +2,6 @@ package com.monitoring;
 
 import org.junit.Assert;
 import org.junit.Test;
-import org.junit.Assert.*;
 import org.mockito.Mockito;
 import static org.mockito.Mockito.*;
 
@@ -14,22 +13,22 @@ public class MainTest
     @Test
     public void main_calls_launcher_start()
     {
-        Launcher launcher = Mockito.mock(Launcher.class);
-        Main.setLauncher(launcher);
+        Monitor monitor = Mockito.mock(Monitor.class);
+        Main.setMonitor(monitor);
         String[] args = new String[0];
 
         Main.main(args);
 
-        verify(launcher).start(args);
+        verify(monitor).start(args);
     }
 
     @Test
     public void setLauncher_sets_Launcher()
     {
-        Launcher launcher = new Launcher();
+        Monitor monitor = new Monitor();
 
-        Main.setLauncher(launcher);
+        Main.setMonitor(monitor);
 
-        Assert.assertSame(Main.launcher, launcher);
+        Assert.assertSame(Main.monitor, monitor);
     }
 }

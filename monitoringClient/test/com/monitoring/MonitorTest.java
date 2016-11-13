@@ -2,8 +2,8 @@ package com.monitoring;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.Mockito;
 
-import static org.junit.Assert.*;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -11,9 +11,9 @@ import static org.mockito.Mockito.verify;
 /**
  * Created by Patrick on 11/11/2016.
  */
-public class LauncherTest {
+public class MonitorTest {
 
-    Launcher launcher;
+    Monitor monitor;
 
     @Before
     public void setup()
@@ -22,23 +22,25 @@ public class LauncherTest {
     @Test
     public void start_calls_setup_when_given_s_flag()
     {
-        launcher = spy(new Launcher());
+        monitor = spy(new Monitor());
         String[] args = {"-s"};
 
-        launcher.start(args);
+        monitor.start(args);
 
-        verify(launcher).setup();
+        verify(monitor).setup();
     }
 
     @Test
     public void start_only_calls_standardRun_when_not_given_s_flag()
     {
-        launcher = spy(new Launcher());
+        monitor = spy(new Monitor());
         String[] args = {};
+        ConnectionManager con = Mockito.mock(ConnectionManager.class);
 
-        launcher.start(args);
+        monitor.start(args);
 
-        verify(launcher, times(0)).setup();
-        verify(launcher).standardRun();
+        verify(monitor, times(0)).setup();
+        verify(monitor).standardRun(con);
     }
+
 }
