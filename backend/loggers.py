@@ -3,6 +3,8 @@ from logging.handlers import TimedRotatingFileHandler
 
 from backend.abstract.observer import Observer, LimitedObserver, ErrorEvent
 
+temp_context = {"ip": "123.456.789.012", "port": "12345"}
+
 
 class PrintLogger(Observer):
     """
@@ -26,8 +28,8 @@ class PyLogger(LimitedObserver):
         twice. Defaults to printing all messages
     """
 
-    def __init__(self, logger, handler, fmt='%(asctime)s - %(ip)-15s %(levelname)-8s %(message)s', level=1, *args,
-                 **kwargs):
+    def __init__(self, logger, handler, fmt='%(asctime)s - %(ip)-15s:%(port)-5s %(levelname)-8s %(message)s', level=1,
+                 *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.logger = logger
         if not self.logger.handlers:
@@ -45,7 +47,7 @@ class PyLogger(LimitedObserver):
         return getattr(self.logger, item)
 
     def _notify(self, event):
-        self.debug(str(event.message), extra={"ip": "123.456.789.012"})
+        self.debug(str(event.message), extra=temp_context)
 
     def observed(self, event):
         return True
@@ -57,6 +59,7 @@ class ConsoleLogger(PyLogger):
     :param fmt: Logging message format for this logger. Uses % style formatting
     :param level: Only logs messages at this level or greater.
     """
+
     def __init__(self, *args, **kwargs):
         super().__init__(
             logging.getLogger("console"),
@@ -75,6 +78,7 @@ class FileLogger(PyLogger):
     :param fmt: Logging message format for this logger. Uses % style formatting
     :param level: Only logs messages at this level or greater.
     """
+
     def __init__(self, filename, backups=5, *args, **kwargs):
         super().__init__(
             logging.getLogger(filename),
@@ -88,8 +92,9 @@ class ConsoleErrorLogger(ConsoleLogger):
     """
     Extension of the ConsoleLogger which only logs ErrorEvents at the level of Error.
     """
+
     def _notify(self, event):
-        self.error(event.data, extra={"ip": "123.456.789.012"})
+        self.error(event.data, extra=temp_context)
 
     def observed(self, event):
         return isinstance(event, ErrorEvent)
