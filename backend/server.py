@@ -1,4 +1,4 @@
-from backend.abstract.observer import Observable, Event
+from backend.abstract.observer import Observable, Event, notify
 from backend.try_class import try_notify
 
 
@@ -7,6 +7,7 @@ class Server(Observable):
         super().__init__(*args, **kwargs)
         self.routing = routing
 
+    @notify(pre="Running Server", post="Stopping Server")
     def run(self):
         self.routing.run(host="0.0.0.0", debug=False, use_reloader=False)
 

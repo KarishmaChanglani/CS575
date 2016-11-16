@@ -1,5 +1,7 @@
 from abc import *
 
+from abstract.observer import Observable
+
 
 class Visitor(metaclass=ABCMeta):
     """
@@ -67,3 +69,18 @@ class VisitableComposite(Visitable):
         :param child: Visitable child to remove
         """
         self.children.remove(child)
+
+
+class VisitableObservable(VisitableComposite, Observable):
+    """
+    Automatically adds observers from this object to its children and removes them when the child is removed
+    """
+    def add_child(self, child):
+        super().add_child(child)
+        for observer in self.observers:
+            child.register(observer)
+
+    def remove_child(self, child):
+        super().remove_child(child)
+        for observer in self.observers:
+            child.deregister(observer)

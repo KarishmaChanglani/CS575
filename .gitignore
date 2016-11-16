@@ -104,6 +104,5 @@ ENV/
 .ropeproject
 
 .idea/
-/routing/static/*.test
-/backend/routing/static/
+/backend/routing/static/*.test
 /backend/routing/templates/

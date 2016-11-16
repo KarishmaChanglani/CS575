@@ -6,13 +6,6 @@ from backend.routing import app
 
 @app.route('/files/<path:path>')
 def statics(path):
-    # context.ip = request.remote_addr
-    # context.path = request.environ['PATH_INFO']
-    # context.agent = request.environ['HTTP_USER_AGENT']
-    # context.remote_port = request.environ['REMOTE_PORT']
-    # context.method = request.environ['REQUEST_METHOD']
-    # context.cookies = request.cookies
-    # context.log("test")
     return send_from_directory('static', path)
 
 
