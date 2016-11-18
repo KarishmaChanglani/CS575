@@ -1,6 +1,7 @@
 package com.monitoring;
 
 import java.io.*;
+import java.util.ArrayList;
 import java.util.UUID;
 
 /**
@@ -15,8 +16,8 @@ public class ConfigFileHandler
     public String getMachineID()
     {
         String id;
-        if(readConfig(CompID) != null)
-            id = readConfig(CompID);
+        if(readConfigForSingleValue(CompID) != null)
+            id = readConfigForSingleValue(CompID);
         else
         {
             id = UUID.randomUUID().toString();
@@ -43,7 +44,7 @@ public class ConfigFileHandler
         {e.printStackTrace();}
     }
 
-    private String readConfig(String label)
+    private String readConfigForSingleValue(String label)
     {
         String rv = null;
         try
@@ -66,13 +67,41 @@ public class ConfigFileHandler
         return rv;
     }
 
+    private ArrayList<String> readConfigForValueSet(String label)
+    {
+        ArrayList<String> rv = new ArrayList<String>();
+        try
+        {
+            BufferedReader br = new BufferedReader(new FileReader(filePath));
+
+            String line;
+            while((line = br.readLine()) != null)
+            {
+                if(line.startsWith(label))
+                    rv.add(line);
+            }
+            br.close();
+        }
+        catch (FileNotFoundException e)
+        {e.printStackTrace();}
+        catch (IOException e)
+        {e.printStackTrace();}
+
+        return rv;
+    }
+
     public String getURL()
     {
-        return readConfig(URL);
+        return readConfigForSingleValue(URL);
     }
 
     public void setURL(String url)
     {
         writeConfig(URL, url);
+    }
+
+    public ArrayList<String> getSensors()
+    {
+        return readConfigForValueSet("SENSOR");
     }
 }
