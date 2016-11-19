@@ -21,7 +21,7 @@ public class Monitor        //will probabaly become multiple calsses later
         if(args.length != 0 && args[0].equals("-s"))
             setup(config);
         ConnectionManager con = new ConnectionManager(config.getURL());
-        standardRun(con, );
+        standardRun(con, getSensorsFromConfig(config));
     }
 
     private void setup(ConfigFileHandler config)
@@ -54,12 +54,15 @@ public class Monitor        //will probabaly become multiple calsses later
     {
         ArrayList<String> sensorList = config.getSensors();
         ArrayList<SystemSensor> sensors= new ArrayList<SystemSensor>();
-        //code to populate
+        for(String name : sensorList)
+        {
+            sensors.add(getSensorByName(name));
+        }
         return sensors;
     }
 
     private SystemSensor getSensorByName(String name)
     {
-
+        return new IPAddressSensor();
     }
 }
