@@ -1,41 +1,43 @@
 from abc import *
 
-from flask import Flask, request
-
+from abstract.observer import notify
 from abstract.visitor import VisitableObservable
+from commands.command import CommandHandler
 from try_class import try_notify
 
 
-class IOManager(VisitableObservable, metaclass=ABCMeta):
-    def add_route(self, route, api):
-        self.add_child(api)
-
-
-class FlaskIOManager(IOManager):
+class IOFactory(metaclass=ABCMeta):
     def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.app = Flask(__name__)
-        self.app.config.from_object(__name__)
-        self.app.config.update(dict(
-            DEBUG=False,
-            SECRET_KEY="dev_key",
-            LOGGER_HANDLER_POLICY="never",
-        ))
+        self.iomanager = self.create_manager(*args, **kwargs)
 
-    def add_route(self, route, api):
-        super().add_route(route, api)
-        self.app.add_url_rule(route, route, lambda: api.respond(FlaskRequest(request)))
+    @try_notify
+    def add_route(self, route, methods, serialization, commands):
+        self.iomanager.add_route(Endpoint(route, methods, self.create_serializer(serialization), commands))
 
-
-class APIManager(VisitableObservable, metaclass=ABCMeta):
-    def __init__(self, serializer, commands, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.commands = commands
-        self.serializer = serializer
+    def build(self):
+        return self.iomanager
 
     @abstractmethod
-    def respond(self, request):
+    def create_serializer(self, serialization):
         pass
+
+    @abstractmethod
+    def create_manager(self, *args, **kwargs):
+        pass
+
+
+class IOManager(CommandHandler):
+    def add_route(self, endpoint):
+        self.add_child(endpoint)
+
+
+class Endpoint(CommandHandler):
+    def __init__(self, route, methods, serializer, commands, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.route = route
+        self.methods = methods
+        self.commands = commands
+        self.serializer = serializer
 
     @try_notify
     def deserialize(self, request):
@@ -47,27 +49,36 @@ class APIManager(VisitableObservable, metaclass=ABCMeta):
     def serialize(self, response):
         return self.serializer.serialize(response)
 
+    @notify(pre="Received {}", post="Response {}")
+    def respond(self, request):
+        data = self.deserialize(request)
+        response = data.map(lambda d: self.handle(d))
+        return self.serialize(response)
+
+
+class Serializer(VisitableObservable, metaclass=ABCMeta):
+    @abstractmethod
+    def deserialize(self, request):
+        pass
+
+    @abstractmethod
+    def serialize(self, response):
+        pass
+
 
 class Request:
-    def __init__(self, ip, port, route, method, data):
-        self.ip = ip
-        self.port = port
+    def __init__(self, route, method, data, raw):
         self.route = route
         self.method = method
         self.data = data
+        self.raw = raw
 
 
-class FlaskRequest(Request):
-    def __init__(self, frequest, *args, **kwargs):
-        super().__init__(
-            ip=frequest.remote_addr,
-            port=frequest.environ['REMOTE_PORT'],
-            route=frequest.environ['PATH_INFO'],
-            method=frequest.environ['REQUEST_METHOD'],
-            data=frequest.data,
-            *args,
-            **kwargs
-        )
+class NetworkRequest(Request):
+    def __init__(self, ip, port, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.ip = ip
+        self.port = port
 
 
 class SerializationError(Exception):

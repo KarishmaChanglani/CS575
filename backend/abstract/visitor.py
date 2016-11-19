@@ -21,6 +21,9 @@ class Visitable:
     """
     Abstract visitable class that allows traversal by a visitor
     """
+    def __init__(self, parent=None):
+        self.parent = parent
+
     def accept(self, visitor):
         """
         Accepts a visitor and passes itself to the visitor's visit function
@@ -37,7 +40,9 @@ class VisitableComposite(Visitable):
     """
     def __init__(self, children=None, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.children = children or []
+        self.children = []
+        for child in children:
+            self.add_child(child)
 
     def accept(self, visitor):
         """
@@ -61,6 +66,7 @@ class VisitableComposite(Visitable):
         Adds a visitable child to this node's list of children
         :param child: Visitable component
         """
+        child.parent = self
         self.children.append(child)
 
     def remove_child(self, child):
@@ -68,6 +74,7 @@ class VisitableComposite(Visitable):
         Removes a child from this component
         :param child: Visitable child to remove
         """
+        child.parent = None
         self.children.remove(child)
 
 
