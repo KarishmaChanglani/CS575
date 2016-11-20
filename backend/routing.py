@@ -1,7 +1,7 @@
 import uuid
 
 from flask import Flask, request, jsonify
-from flask_classy import FlaskView
+from flask_classy import FlaskView, route
 
 import server
 from operations import *
@@ -43,6 +43,22 @@ class UserView(FlaskView):
         result = server.server.get_task(task_id)
         return response(True, userid=result)
 
+    def data(self):
+        data = parse_json('user', 'category', 'start', 'count')
+        task_id = uuid.uuid4()
+        server.server.add_task(task_id, GetUserRecordsOperation(
+            data['user'],
+            data['category'],
+            data['start'],
+            data['count']
+        ))
+        result = server.server.get_task(task_id)
+        return response(
+            True,
+            records=[{"machine": r.machine, "datetime": r.timestamp, "data": r.data} for r in result["records"]],
+            last=result["last"]
+        )
+
 
 class MachineView(FlaskView):
     def index(self):
@@ -70,5 +86,33 @@ class MachineView(FlaskView):
         )
 
 
+class SaveView(FlaskView):
+    @route("/data/", methods=("POST",))
+    def data(self):
+        data = parse_json('machine', 'datetime', 'category', 'data')
+        task_id = uuid.uuid4()
+        server.server.add_task(task_id, SaveMachineData(
+            data['machine'],
+            data['datetime'],
+            data['category'],
+            data['data']
+        ))
+        result = server.server.get_task(task_id)
+        return response(result)
+
+    @route("/auth/", methods=("POST",))
+    def auth(self):
+        data = parse_json('action', 'user', 'machine')
+        task_id = uuid.uuid4()
+        server.server.add_task(task_id, SaveUserAuthorization(
+            data['action'],
+            data['user'],
+            data['machine'],
+        ))
+        result = server.server.get_task(task_id)
+        return response(result)
+
+
 UserView.register(app)
 MachineView.register(app)
+SaveView.register(app)

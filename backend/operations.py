@@ -193,7 +193,10 @@ class GetUserRecordsOperation(CompositeOperation):
 
     @property
     def result(self):
-        return self.records
+        return {
+            "last": self.count + self.start + len(self.records),
+            "records": self.records
+        }
 
 
 class SaveMachineData(CompositeOperation):
