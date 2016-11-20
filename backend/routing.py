@@ -1,8 +1,10 @@
+import uuid
+
 from flask import Flask, request, jsonify
 from flask_classy import FlaskView
 
 import server
-from operations import UserError, Login
+from operations import *
 
 app = Flask(__name__)
 
@@ -36,9 +38,37 @@ def response(success, status=200, **kwargs):
 class UserView(FlaskView):
     def index(self):
         data = parse_json('user', 'password')
-        server.server.add_task("foo", Login(data['user'], data['password']))
-        result = server.server.get_task("foo")
+        task_id = uuid.uuid4()
+        server.server.add_task(task_id, Login(data['user'], data['password']))
+        result = server.server.get_task(task_id)
         return response(True, userid=result)
 
 
+class MachineView(FlaskView):
+    def index(self):
+        data = parse_json('machine', 'user')
+        task_id = uuid.uuid4()
+        server.server.add_task(task_id, GetMachineOperation(data['machine'], data['user']))
+        result = server.server.get_task(task_id)
+        return response(True, name=result.name)
+
+    def data(self):
+        data = parse_json('machine', 'user', 'category', 'start', 'count')
+        task_id = uuid.uuid4()
+        server.server.add_task(task_id, GetMachineRecordsOperation(
+            data['machine'],
+            data['user'],
+            data['category'],
+            data['start'],
+            data['count']
+        ))
+        result = server.server.get_task(task_id)
+        return response(
+            True,
+            records=[{"machine": r.machine, "datetime": r.timestamp, "data": r.data} for r in result["records"]],
+            last=result["last"]
+        )
+
+
 UserView.register(app)
+MachineView.register(app)

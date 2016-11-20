@@ -162,27 +162,34 @@ class GetMachineOperation(CompositeOperation):
 
 
 class GetMachineRecordsOperation(CompositeOperation):
-    def __init__(self, machine_id, user_id, category, *args, **kwargs):
+    def __init__(self, machine_id, user_id, category, start, count, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.machine_id = machine_id
         self.user_id = user_id
         self.category = category
+        self.start = start
+        self.count = count
         self.add_child("auth", AuthorizedOperation(machine_id, user_id))
-        self.add_child("records", GetMachineRecords(machine_id, category))
+        self.add_child("records", GetMachineRecords(machine_id, category, start, count))
 
     @property
     def result(self):
         if self.auth:
-            return self.records
+            return {
+                "last": self.count + self.start + len(self.records),
+                "records": self.records
+            }
         return None
 
 
 class GetUserRecordsOperation(CompositeOperation):
-    def __init__(self, user_id, category, *args, **kwargs):
+    def __init__(self, user_id, category, start, count, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.user_id = user_id
         self.category = category
-        self.add_child("records", GetUserRecords(user_id, category))
+        self.start = start
+        self.count = count
+        self.add_child("records", GetUserRecords(user_id, category, start, count))
 
     @property
     def result(self):
