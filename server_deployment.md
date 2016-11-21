@@ -19,3 +19,6 @@ TBD
 $ source venv/bin/activate
 $ python3 run.py
 ```
+
+## Additional information
+Static files can be added to `./backend/static/` and will be available from the url http://localhost:5678/static/ followed by the filename.
