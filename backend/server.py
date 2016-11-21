@@ -1,5 +1,5 @@
 from backend.commands.broker import MockBroker
-from data.db_broker import DBBroker
+from backend.data.db_broker import DBBroker
 
 
 class Server:
