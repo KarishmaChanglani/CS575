@@ -44,12 +44,10 @@ class Blob_Table_Lite:
         authorization_table = Authorization_Table_Lite()
         authorization_table.set_conn(conn)
         auths = authorization_table.get_machines(user_id)
-        result = dict()
         i = 0
-        for authorization in auths.keys():
+        result = []
+        for _, authorization in auths.items():
             machine_id = authorization['machine_id']
-            result = []
-            machine_data = []
             for row in conn.execute(query, [machine_id, category]):
                 if i < start + count - 1 and i >= start - 1:
                     data = dict()
@@ -57,10 +55,8 @@ class Blob_Table_Lite:
                     data['datetime'] = row[1]
                     data['category'] = row[2]
                     data['data'] = row[3]
-                    machine_data.append(data)
+                    result.append(data)
                 i += 1
-            result.append({'machine_id': machine_id, 'data':machine_data})
-
         return result
 
     """to close the connection object before destroying the object"""
