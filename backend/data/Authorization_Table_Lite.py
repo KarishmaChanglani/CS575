@@ -1,7 +1,7 @@
 import sqlite3
 
 class Authorization_Table_Lite:
-    def __init__(self, database_name):
+    def __init__(self, database_name='blobs.db'):
         self.conn = sqlite3.connect(database_name)
 
     def get_users(self, machine_id):
@@ -42,3 +42,7 @@ class Authorization_Table_Lite:
             return 2
         conn.commit()
         return 0
+
+
+    def set_conn(self, conn):
+        self.conn = conn

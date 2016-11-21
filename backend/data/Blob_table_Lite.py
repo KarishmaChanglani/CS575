@@ -1,4 +1,5 @@
 import sqlite3
+from Authorization_Table_Lite import Authorization_Table_Lite
 
 class Blob_Table_Lite:
     def __init__(self, database_name):
@@ -33,6 +34,31 @@ class Blob_Table_Lite:
                 result[i]['category'] = row[2]
                 result[i]['data'] = row[3]
             i += 1
+
+        return result
+
+    def get_records_user(self, start, count, user_id, category):
+        conn = self.conn
+        query = 'SELECT * from Blobs WHERE Machine_id = ? AND category_name = ? ;'
+        authorization_table = Authorization_Table_Lite()
+        authorization_table.set_conn(conn)
+        auths = authorization_table.get_machines(user_id)
+        result = dict()
+        i = 0
+        for authorization in auths.keys():
+            machine_id = authorization['machine_id']
+            result = []
+            machine_data = []
+            for row in conn.execute(query, [machine_id, category]):
+                if i < start + count - 1 and i >= start - 1:
+                    data = dict()
+                    data['machine_id'] = row[0]
+                    data['datetime'] = row[1]
+                    data['category'] = row[2]
+                    data['data'] = row[3]
+                    machine_data.append(data)
+                i += 1
+            result.append({'machine_id': machine_id, 'data':machine_data})
 
         return result
 

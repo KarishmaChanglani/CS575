@@ -1,7 +1,7 @@
 import sqlite3
 
 class Machine_Table_Lite:
-    def __init__(self, database_name):
+    def __init__(self, database_name='blobs.db'):
         self.conn = sqlite3.connect(database_name)
 
     def get_name(self, id):
@@ -15,6 +15,7 @@ class Machine_Table_Lite:
         result[0]['id'] = row[0]
         result[0]['name'] = row[1]
         return result
+
 
     def set_machine(self, id, name):
         conn = self.conn
@@ -30,3 +31,6 @@ class Machine_Table_Lite:
             return 2
         conn.commit()
         return 0
+
+    def set_conn(self,conn):
+        self.conn = conn
