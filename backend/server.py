@@ -1,4 +1,4 @@
-from db_broker import MockBroker
+from backend.db_broker import MockBroker
 
 
 class Server:

@@ -3,8 +3,8 @@ import uuid
 from flask import Flask, request, jsonify
 from flask_classy import FlaskView, route
 
-import server
-from operations import *
+from backend import server
+from backend.operations import *
 
 app = Flask(__name__)
 
