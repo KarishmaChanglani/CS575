@@ -1,8 +1,8 @@
 from backend.commands.broker import Broker
-from data.Authorization_Table_Lite import Authorization_Table_Lite
-from data.Blob_table_Lite import Blob_Table_Lite
-from data.Machine_table_lite import Machine_Table_Lite
-from data.User_Table_Lite import User_Table_Lite
+from backend.data.Authorization_Table_Lite import Authorization_Table_Lite
+from backend.data.Blob_table_Lite import Blob_Table_Lite
+from backend.data.Machine_table_lite import Machine_Table_Lite
+from backend.data.User_Table_Lite import User_Table_Lite
 
 database = 'blobs.db'
 
