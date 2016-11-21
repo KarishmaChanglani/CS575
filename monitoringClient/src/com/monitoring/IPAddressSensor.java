@@ -8,7 +8,7 @@ import java.net.UnknownHostException;
  */
 public class IPAddressSensor implements SystemSensor
 {
-    private final String LABEL = "IPSENSOR";
+    public static final String LABEL = "IPSENSOR";
     @Override
     public String getLabel()
     {

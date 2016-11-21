@@ -24,7 +24,7 @@ public class Monitor        //will probabaly become multiple calsses later
         standardRun(con, getSensorsFromConfig(config));
     }
 
-    private void setup(ConfigFileHandler config)
+    public void setup(ConfigFileHandler config)
     {
         Scanner in = new Scanner(System.in);
         System.out.println("Enter the receiving URL");
@@ -41,13 +41,16 @@ public class Monitor        //will probabaly become multiple calsses later
         connection.setProperty("LABEL",label);
         connection.setProperty("ADMIN_ID", adminID);
         connection.sendRequest();
+
+        config.addSensor(IPAddressSensor.LABEL);
     }
 
-    private void standardRun(ConnectionManager connection, ArrayList<SystemSensor> sensors)
+    public void standardRun(ConnectionManager connection, ArrayList<SystemSensor> sensors)
     {
         NotificationTask notifier = new NotificationTask(sensors, connection);
         Timer timer = new Timer();
-        timer.schedule(notifier, 0, 3600*1000);
+        //timer.schedule(notifier, 0, 3600*1000);
+        timer.schedule(notifier, 0, 100*36);
     }
 
     private ArrayList<SystemSensor> getSensorsFromConfig(ConfigFileHandler config)

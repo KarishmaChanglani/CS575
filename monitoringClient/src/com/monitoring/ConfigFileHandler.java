@@ -37,7 +37,7 @@ public class ConfigFileHandler
 
             FileWriter fileWriter = new FileWriter(file.getName(),true);
             BufferedWriter bufferWritter = new BufferedWriter(fileWriter);
-            bufferWritter.write(String.format("%s:%s", label, element));
+            bufferWritter.write(String.format("%s:%s\n", label, element));
             bufferWritter.close();
         }
         catch(Exception e)
@@ -55,7 +55,7 @@ public class ConfigFileHandler
             while((line = br.readLine()) != null)
             {
                 if(line.startsWith(label))
-                    rv = line;
+                    rv = line.split(":", 2)[1];        //not very safe.
             }
             br.close();
         }
@@ -103,5 +103,10 @@ public class ConfigFileHandler
     public ArrayList<String> getSensors()
     {
         return readConfigForValueSet("SENSOR");
+    }
+
+    public void addSensor(String sensorType)
+    {
+        writeConfig("SENSOR", IPAddressSensor.LABEL);
     }
 }

@@ -39,7 +39,9 @@ public class ConnectionManager
     {
         try
         {
-            URL url = new URL(urlString);
+//            URL url = new URL(urlString);
+            URL url = new URL("http", urlString.split(":")[0], Integer.parseInt(urlString.split(":")[1]), "/save/data/");
+            System.out.println(url);
             HttpURLConnection con = (HttpURLConnection) url.openConnection();
             return con;
         }
@@ -55,7 +57,8 @@ public class ConnectionManager
     {
         try
         {
-            connection.setDoOutput(true);
+            if(!connection.getDoOutput())
+                connection.setDoOutput(true);
             OutputStreamWriter wr = new OutputStreamWriter(connection.getOutputStream());
             wr.write(nextPostData.toString());
             wr.flush();
@@ -63,7 +66,7 @@ public class ConnectionManager
         } catch (IOException e) {
             e.printStackTrace();
         }
-
+        System.out.println(nextPostData.toString());
         nextPostData = new JSONObject();
     }
 }

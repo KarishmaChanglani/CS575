@@ -25,5 +25,6 @@ public class NotificationTask extends TimerTask
             postRequest.setProperty(sensor.getLabel(), sensor.getData());
         }
         postRequest.sendRequest();
+        System.out.println("sent");
     }
 }

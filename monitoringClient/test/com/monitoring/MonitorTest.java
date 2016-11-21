@@ -4,6 +4,8 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
 
+import java.util.ArrayList;
+
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -24,10 +26,11 @@ public class MonitorTest {
     {
         monitor = spy(new Monitor());
         String[] args = {"-s"};
+        ConfigFileHandler config = new ConfigFileHandler();
 
         monitor.start(args);
 
-        verify(monitor).setup();
+        verify(monitor).setup(config);
     }
 
     @Test
@@ -36,11 +39,12 @@ public class MonitorTest {
         monitor = spy(new Monitor());
         String[] args = {};
         ConnectionManager con = Mockito.mock(ConnectionManager.class);
+        ConfigFileHandler config = new ConfigFileHandler();
 
         monitor.start(args);
 
-        verify(monitor, times(0)).setup();
-        verify(monitor).standardRun(con);
+        verify(monitor, times(0)).setup(config);
+        verify(monitor).standardRun(con, new ArrayList<SystemSensor>());
     }
 
 }
