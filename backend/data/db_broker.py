@@ -30,7 +30,7 @@ class DBBroker(Broker):
 
     def visit_get_user_records(self, node):
         table = Blob_Table_Lite(database)
-        node.result = table.get_records_user(node.start, node.count, node.user_id, node.category)
+        node.result = [Record(**r) for r in table.get_records_user(node.start, node.count, node.user_id, node.category)]
         table.conn.close()
 
     def visit_get_machine_users(self, node):
@@ -43,7 +43,7 @@ class DBBroker(Broker):
         node.result = Container(
             username=node.username,
             password="password",
-            id="id"
+            id=1  # TODO: have actual users
         )
         table.conn.close()
 
