@@ -36,6 +36,7 @@ def response(success, status=200, **kwargs):
 
 
 class UserView(FlaskView):
+    @route("/", methods=("POST",))
     def index(self):
         data = parse_json('user', 'password')
         task_id = uuid.uuid4()
@@ -43,6 +44,7 @@ class UserView(FlaskView):
         result = server.server.get_task(task_id)
         return response(True, userid=result)
 
+    @route("/data/", methods=("POST",))
     def data(self):
         data = parse_json('user', 'category', 'start', 'count')
         task_id = uuid.uuid4()
@@ -61,6 +63,7 @@ class UserView(FlaskView):
 
 
 class MachineView(FlaskView):
+    @route("/", methods=("POST",))
     def index(self):
         data = parse_json('machine', 'user')
         task_id = uuid.uuid4()
@@ -68,6 +71,7 @@ class MachineView(FlaskView):
         result = server.server.get_task(task_id)
         return response(True, name=result.name)
 
+    @route("/data/", methods=("POST",))
     def data(self):
         data = parse_json('machine', 'user', 'category', 'start', 'count')
         task_id = uuid.uuid4()
