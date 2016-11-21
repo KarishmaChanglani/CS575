@@ -23,7 +23,7 @@ class User_Table_Lite:
 
 
     """returns the User with the given id in the form if a dictionary"""
-    def get_User(self,id):
+    def get_User(self, id):
         conn = self.conn
         query = "SElECT * from User WHERE id = ?;"
         c = conn.cursor()

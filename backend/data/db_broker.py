@@ -29,7 +29,9 @@ class DBBroker(Broker):
         table.conn.close()
 
     def visit_get_user_records(self, node):
-        pass
+        table = Blob_Table_Lite(database)
+        node.result = table.get_records_user(node.start, node.count, node.user_id, node.category)
+        table.conn.close()
 
     def visit_get_machine_users(self, node):
         table = Authorization_Table_Lite(database)

@@ -1,10 +1,11 @@
 from backend.commands.broker import MockBroker
+from data.db_broker import DBBroker
 
 
 class Server:
     def __init__(self):
         self.tasks = {}
-        self.broker = MockBroker()
+        self.broker = DBBroker()
 
     def add_task(self, name, task):
         self.tasks[name] = task

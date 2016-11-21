@@ -1,5 +1,5 @@
 import sqlite3
-from Authorization_Table_Lite import Authorization_Table_Lite
+from backend.data.Authorization_Table_Lite import Authorization_Table_Lite
 
 
 class Blob_Table_Lite:
