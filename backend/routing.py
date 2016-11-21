@@ -32,7 +32,7 @@ def parse_json(*required):
 def response(success, status=200, **kwargs):
     ret = {"status": "success" if success else "failure"}
     ret.update(kwargs)
-    return jsonify(ret), status
+    return jsonify(ret), status, {"Content-Type": "application/json"}
 
 
 class UserView(FlaskView):
