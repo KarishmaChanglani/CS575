@@ -1,0 +1,29 @@
+<div class="row">
+    <div class="col-sm-12">
+        <div class="page-header">
+            <h2>Dashboard</h2>
+        </div>
+    </div>
+</div>
+<div class="row" ng-controller="IpCtrl">
+    <div class="col-sm-12">
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Machine Id</th>
+                    <th>IP Address</th>
+                    <th>Last Updated On</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr ng-repeat="record in records">
+                    <th scope="row"></th>
+                    <td>{{record.machine}}</td>
+                    <td>{{record.data}}</td>
+                    <td>{{record.datetime}}</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
