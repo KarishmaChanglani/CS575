@@ -1,5 +1,5 @@
 # Json Schema
-For now, all JSON requests will pass through http://example.com:12345/data and the exact url will be determined once the server is running on tux.
+Each URL will be specific to the type of request being made and can be seen in the following sections. For now, http://www.example.com:12345 is used for illustrative purposes until the server is actually deployed. Note that trailing '/' in some urls is required for correct functionality.
 
 The current available strings for category name are as follows:
 
@@ -25,6 +25,7 @@ No guarantees will be made about the contents of the message, but it may be usef
 The first request to the server from the client must be logging in to receive the user's ID from the server. All subsequent requests require this ID in a key called `"user"`. Responses will be sent with the HTTP code 403 Forbidden if the user does not have access to the requested machine. 
 
 ### Logging In
+http://www.example.com:12345/user/
 Since there is currently no protocol for maintaining passwords and security, those fields can be ignored, but this message can be used for getting the user id from the server which is necessary for subsequent requests
 
 #### Request
@@ -44,6 +45,7 @@ Since there is currently no protocol for maintaining passwords and security, tho
 ```
 
 ### Getting Machine Information
+http://www.example.com:12345/machine/
 Machines can have names set by the user and a list of different users who can access it. This is the protocol for retrieving that data. Machines should be displayed using the user's assigned name, so this should be done before displaying any data collected from the server.
 
 #### Request
@@ -69,6 +71,7 @@ Machines can have names set by the user and a list of different users who can ac
 
 
 ### Getting data for a single machine
+http://www.example.com:12345/machine/data/
 This works in a paging format where some number of records can be selected. There is currently no limit on the number of records which can be retrieved at once. Records are sent in order from newest to oldest.
 
 #### Request
@@ -100,6 +103,7 @@ This works in a paging format where some number of records can be selected. Ther
 
 
 ### Getting data for multiple machines
+http://www.example.com:12345/user/data/
 This is identical to the protocol for a single machine with the omission of the machine key from the request. Only machines the user is authorized to access will be returned in the response. This may be an empty list if the user does not have authorization to access any machine.
 
 #### Request
@@ -138,6 +142,7 @@ All saving operations will return a 201 Created HTTP response code on success an
 ```
 
 ### Saving Statistic Data
+http://www.example.com:12345/save/data/
 ```
 {
     "machine": "uuid",
@@ -148,6 +153,7 @@ All saving operations will return a 201 Created HTTP response code on success an
 ```
 
 ### Saving Machine-User Authorization
+http://www.example.com:12345/save/auth/
 ```
 {
     "action": "'authorize' or 'deauthorize'",
