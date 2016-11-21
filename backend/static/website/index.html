@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="MainApp">
+<head>
+    <meta charset="UTF-8">
+    <title>System Monitor</title>
+    <link rel="stylesheet" href="assets/css/bootstrap.min.css">
+    <link rel="stylesheet" href="assets/css/font-awesome.min.css">
+    <link rel="stylesheet" href="assets/css/loading-bar.min.css">
+    <link rel="stylesheet" href="assets/css/custom.css">
+</head>
+<body>
+
+    <div ng-include='"app/shared/templates/header.html"'></div>
+        <div class="container">
+            <div ng-view></div>
+        </div>
+    </div>
+
+
+
+    <script src="assets/js/jquery-3.1.1.min.js"></script>
+    <script src="assets/js/bootstrap.min.js"></script>
+    <script src="assets/js/angular.min.js"></script>
+    <script src="assets/js/angular-route.min.js"></script>
+    <script src="assets/js/angular-resource.min.js"></script>
+    <script src="assets/libs/ChartJS/Chart.bundle.min.js"></script>
+    <script src="assets/libs/ChartJS/angular-chart.min.js"></script>
+    <script src="assets/js/loading-bar.min.js"></script>
+    <script src="assets/libs/angular-counter-with-easing.min.js"></script>
+    <script src="app.js"></script>
+    <script src="app/components/dashboard/DashboardModule.js"></script>
+    <script src="app/components/user/UserModule.js"></script>
+</body>
+</html>
