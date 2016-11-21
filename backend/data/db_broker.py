@@ -43,7 +43,7 @@ class DBBroker(Broker):
         node.result = Container(
             username=node.username,
             password="password",
-            id="id"
+            id=1  # TODO: have actual users
         )
         table.conn.close()
 
