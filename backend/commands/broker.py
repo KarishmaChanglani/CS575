@@ -2,7 +2,7 @@ import random
 from abc import *
 from datetime import datetime, timedelta
 
-from backend import operations
+from backend.commands import operations
 
 
 class Broker(operations.Visitor, metaclass=ABCMeta):

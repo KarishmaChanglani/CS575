@@ -4,7 +4,7 @@ from flask import Flask, request, jsonify
 from flask_classy import FlaskView, route
 
 from backend import server
-from backend.operations import *
+from backend.commands.operations import *
 
 app = Flask(__name__)
 

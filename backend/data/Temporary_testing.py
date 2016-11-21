@@ -1,4 +1,4 @@
-from User_Table_Lite import User_Table_Lite
+from backend.data.User_Table_Lite import User_Table_Lite
 
 
 def main():

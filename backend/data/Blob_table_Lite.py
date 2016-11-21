@@ -1,5 +1,6 @@
 import sqlite3
 
+
 class Blob_Table_Lite:
     def __init__(self, database_name):
         self.conn = sqlite3.connect(database_name)
