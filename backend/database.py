@@ -7,10 +7,16 @@ from backend.controllers import Controller, UserError
 
 
 class AuthorizationError(UserError):
+    """Error indication the user attempted to take some action without authorization"""
     pass
 
 
 class SqliteController(Controller):
+    """
+    Concrete controller strategy for the sqlite3 database
+    :param database: The database file to connect to, or ":memory:" to use an in-memory database. Defaults to
+        config.DATABASE
+    """
     def __init__(self, database=config.DATABASE):
         self.database = database
 

@@ -6,7 +6,15 @@ class UserError(Exception):
 
 
 class Controller(metaclass=ABCMeta):  # TODO: Make this observable and notify a logger when "handle" is called
+    """
+    Controller for handling user commands. Acts as a strategy for the Server class
+    """
     def handle(self, command):
+        """
+        Handles the command by passing it to one of the internal functions based on its type
+        :param command: Command to process
+        :return: Result of processing the command (varies by command type)
+        """
         return {
             "GetUser": self.get_user,
             "GetUserData": self.get_user_data,
