@@ -14,9 +14,9 @@ def user_error(e):
     return response(False, status=400, reason=e.args[0] if e.args else "")
 
 
-# @app.errorhandler(Exception)
-# def server_error(e):
-#     return response(False, status=500, reason=repr(e))
+@app.errorhandler(Exception)
+def server_error(e):
+    return response(False, status=500, reason=repr(e))
 
 
 def parse_json(*required):
