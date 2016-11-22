@@ -14,9 +14,9 @@ def user_error(e):
     return response(False, status=400, reason=e.args[0] if e.args else "")
 
 
-@app.errorhandler(Exception)
-def server_error(e):
-    return response(False, status=500, reason=repr(e))
+# @app.errorhandler(Exception)
+# def server_error(e):
+#     return response(False, status=500, reason=repr(e))
 
 
 def parse_json(*required):
@@ -55,9 +55,15 @@ class UserView(FlaskView):
             data['count']
         ))
         result = server.server.get_task(task_id)
+        records = []
+        for machine, data in result['records'].items():
+            records.append({
+                "machine": machine,
+                "data": [{"datetime": r.timestamp, "data": r.data} for r in data]
+            })
         return response(
             True,
-            records=[{"machine": r.machine, "datetime": r.timestamp, "data": r.data} for r in result["records"]],
+            records=records,
             last=result["last"]
         )
 
@@ -85,7 +91,7 @@ class MachineView(FlaskView):
         result = server.server.get_task(task_id)
         return response(
             True,
-            records=[{"machine": r.machine, "datetime": r.timestamp, "data": r.data} for r in result["records"]],
+            records=[{"datetime": r.timestamp, "data": r.data} for r in result["records"]],
             last=result["last"]
         )
 
