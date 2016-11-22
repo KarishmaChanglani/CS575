@@ -19,6 +19,39 @@ class SqliteController(Controller):
     """
     def __init__(self, database=config.DATABASE):
         self.database = database
+        self._setup()
+
+    def _setup(self):
+        with closing(sqlite3.connect(self.database)) as db:
+            db.execute(
+                "CREATE TABLE IF NOT EXISTS"
+                " User("
+                "   Id INTEGER PRIMARY KEY,"
+                "   token TEXT)"
+            )
+            db.execute(
+                "CREATE TABLE IF NOT EXISTS"
+                " Machine("
+                "   Id TEXT,"
+                "   Name TEXT)"
+            )
+            db.execute(
+                "CREATE TABLE IF NOT EXISTS "
+                " Blobs("
+                "   Machine_Id TEXT,"
+                "   time_stamp TEXT,"
+                "   category_name TEXT,"
+                "   data BLOB,"
+                "   PRIMARY KEY(Machine_Id, time_stamp, category_name))"
+            )
+            db.execute(
+                "CREATE TABLE IF NOT EXISTS"
+                " Authorization("
+                "   User_Id INTEGER,"
+                "   Machine_Id TEXT,"
+                "   PRIMARY KEY(User_Id, Machine_Id))"
+            )
+            db.commit()
 
     def get_user(self, command):
         return {"id": 1}

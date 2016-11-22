@@ -1,6 +1,7 @@
 from backend.command import *
 
-# Location of the database. Default "instance/blobs.db"
+# Location of the database. Default "instance/blobs.db". If this deployment is only for testing, set this value to
+# "tests/test.db"
 DATABASE = "instance/blobs.db"
 
 # Port for hosting the server. Default 5678
