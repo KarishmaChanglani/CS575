@@ -85,28 +85,39 @@ class SqliteController(Controller):
                 " OFFSET ?",
                 [command.machine, command.category, command.count, command.start]
             )
-        result = {
-            "last": command.start,
-            "records": []
-        }
-        for row in query:
-            result['last'] += 1
-            result['records'].append({
-                "datetime": row[0],
-                "data": row[1]
-            })
-        return result
+            result = {
+                "last": command.start,
+                "records": []
+            }
+            for row in query:
+                result['last'] += 1
+                result['records'].append({
+                    "datetime": row[0],
+                    "data": row[1]
+                })
+            return result
 
     def save_auth(self, command):
-        with closing(sqlite3.connect(self.database)) as db:
-            db.execute(
-                "INSERT INTO Authorization"
-                " (User_Id, Machine_Id)"
-                " VALUES (?, ?)",
-                [command.user, command.machine]
-            )
-            db.commit()
-        return True
+        try:
+            with closing(sqlite3.connect(self.database)) as db:
+                if command.authorize:
+                    db.execute(
+                        "INSERT INTO Authorization"
+                        " (User_Id, Machine_Id)"
+                        " VALUES (?, ?)",
+                        [command.user, command.machine]
+                    )
+                else:
+                    db.execute(
+                        "DELETE FROM Authorization"
+                        " WHERE User_Id = ?"
+                        " AND Machine_Id = ?",
+                        [command.user, command.machine]
+                    )
+                db.commit()
+        except sqlite3.IntegrityError as e:
+            pass  # This means the record already existed which really isn't a problem
+        return dict()
 
     def save_record(self, command):
         with closing(sqlite3.connect(self.database)) as db:
@@ -117,4 +128,4 @@ class SqliteController(Controller):
                 [command.machine, command.category, command.datetime, command.data]
             )
             db.commit()
-        return True
+        return dict()

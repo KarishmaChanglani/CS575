@@ -96,7 +96,7 @@ class Controller(metaclass=ABCMeta):  # TODO: Make this observable and notify a 
         """
         Saves authorization state for the user
         :param command: Command object with values "authorize", "user", "machine"
-        :return: True if saving was successful
+        :return: Empty dictionary if successful
         """
         pass
 
@@ -105,6 +105,6 @@ class Controller(metaclass=ABCMeta):  # TODO: Make this observable and notify a 
         """
         Saves a record for the machine
         :param command: Command object with values "machine", "datetime", "category", and "data"
-        :return: True if saving was successful
+        :return: Empty dictionary if successful
         """
         pass

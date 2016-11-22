@@ -114,14 +114,11 @@ class FlaskRoute(Route):
         return result, code, {"Content-Type": "application/json"}
 
     def error(self, e):
-        # TODO: Remove this
-        raise e
-        data = {
-            "status": "failure",
-            "reason": repr(e)
-        }
+        data = {"status": "failure"}
         if isinstance(e, UserError):
+            data['reason'] = e.args[0]
             return self.package(self.serializer.serialize(data), 400)
+        data['reason'] = repr(e)
         return self.package(self.serializer.serialize(data), 500)
 
 

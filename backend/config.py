@@ -13,7 +13,7 @@ COMMAND_ROUTES = {
     GetUserCommand: "/user/",
     GetUserDataCommand: "/user/data/",
     GetMachineCommand: "/machine/",
-    GetMachineDataCommand: "/machine/data",
+    GetMachineDataCommand: "/machine/data/",
     SaveAuthCommand: "/save/auth/",
     SaveRecordCommand: "/save/data/"
 }
