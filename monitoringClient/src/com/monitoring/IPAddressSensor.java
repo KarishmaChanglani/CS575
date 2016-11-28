@@ -1,14 +1,13 @@
 package com.monitoring;
 
 import java.net.InetAddress;
-import java.net.UnknownHostException;
 
 /**
  * Created by Patrick on 11/18/2016.
  */
 public class IPAddressSensor implements SystemSensor
 {
-    public static final String LABEL = "IPSENSOR";
+    public static final String LABEL = "ip";
     @Override
     public String getLabel()
     {

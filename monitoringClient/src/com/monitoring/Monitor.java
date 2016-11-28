@@ -1,10 +1,5 @@
 package com.monitoring;
 
-import java.io.IOException;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.ProtocolException;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.Scanner;
 import java.util.Timer;
@@ -18,9 +13,9 @@ public class Monitor        //will probabaly become multiple calsses later
     public void start(String[] args)
     {
         ConfigFileHandler config = new ConfigFileHandler();
-        if(args.length != 0 && args[0].equals("-s"))
+        if(!config.hasUrl())
             setup(config);
-        ConnectionManager con = new ConnectionManager(config.getURL());
+        ConnectionManager con = new ConnectionManager(config.getURL(), config.getMachineID());
         standardRun(con, getSensorsFromConfig(config));
     }
 
@@ -35,11 +30,12 @@ public class Monitor        //will probabaly become multiple calsses later
         String adminID = in.nextLine();
         config.setURL(url);
 
-        ConnectionManager connection = new ConnectionManager(config.getURL());
+        ConnectionManager connection = new ConnectionManager(config.getURL(), config.getMachineID());
 
-        connection.setProperty("MACHINE",config.getMachineID());
-        connection.setProperty("LABEL",label);
-        connection.setProperty("ADMIN_ID", adminID);
+        //connection.addSensorData("LABEL",label);
+        connection.addSensorData("action","authorize");
+        connection.addSensorData("user", adminID);
+        connection.addSensorData("machine",config.getMachineID());
         connection.sendRequest();
 
         config.addSensor(IPAddressSensor.LABEL);
@@ -47,7 +43,8 @@ public class Monitor        //will probabaly become multiple calsses later
 
     public void standardRun(ConnectionManager connection, ArrayList<SystemSensor> sensors)
     {
-        NotificationTask notifier = new NotificationTask(sensors, connection);
+        ConfigFileHandler config = new ConfigFileHandler();
+        NotificationTask notifier = new NotificationTask(sensors, config.getURL(), config.getMachineID());
         Timer timer = new Timer();
         //timer.schedule(notifier, 0, 3600*1000);
         timer.schedule(notifier, 0, 100*36);

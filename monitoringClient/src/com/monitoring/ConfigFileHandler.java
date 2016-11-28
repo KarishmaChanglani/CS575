@@ -10,8 +10,14 @@ import java.util.UUID;
 public class ConfigFileHandler
 {
     private String filePath = "./clientConfig";
+    private File file;
     public final String CompID = "CompID";
     public final String URL = "URL";
+
+    public ConfigFileHandler()
+    {
+        this.file = new File(filePath);
+    }
 
     public String getMachineID()
     {
@@ -30,11 +36,6 @@ public class ConfigFileHandler
     {
         try
         {
-            File file = new File(filePath);
-
-            if(!file.exists())
-                file.createNewFile();
-
             FileWriter fileWriter = new FileWriter(file.getName(),true);
             BufferedWriter bufferWritter = new BufferedWriter(fileWriter);
             bufferWritter.write(String.format("%s:%s\n", label, element));
@@ -49,6 +50,11 @@ public class ConfigFileHandler
         String rv = null;
         try
         {
+            File file = new File(filePath);
+
+            if(!file.exists())
+                file.createNewFile();
+
             BufferedReader br = new BufferedReader(new FileReader(filePath));
 
             String line;
@@ -108,5 +114,10 @@ public class ConfigFileHandler
     public void addSensor(String sensorType)
     {
         writeConfig("SENSOR", IPAddressSensor.LABEL);
+    }
+
+    public boolean hasUrl()
+    {
+        return readConfigForSingleValue(URL) != null;
     }
 }
