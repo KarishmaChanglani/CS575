@@ -7,8 +7,7 @@ dashboardModule.controller('DashboardController', function ($scope, $http) {
 });
 dashboardModule.controller("IpCtrl", function ($scope, $http) {
     var parameter = {user: '1', category:'ip', start:0, count:10};
-    $http.post("http://127.0.0.1:5678/user/data/", parameter).success(function(data){
-        console.log(data.records);
+    $http.post("/user/data/", parameter).success(function(data){
         $scope.records = data.records;
-    })
+    });
 });

@@ -17,3 +17,9 @@ mainApp.config(['$routeProvider', function ($routeProvider) {
             redirectTo : '/dashboard'
         });
 }]);
+
+mainApp.filter('dateInMillis', function() {
+    return function(dateString) {
+        return Date.parse(dateString);
+    };
+});
