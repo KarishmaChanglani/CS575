@@ -21,7 +21,7 @@
                     <th scope="row"></th>
                     <td>{{record.machine}}</td>
                     <td>{{record.data}}</td>
-                    <td>{{record.datetime}}</td>
+                    <td>{{record.datetime | date:'yyyy-MM-ddTHH:mm:ssZ'}}</td>
                 </tr>
             </tbody>
         </table>
