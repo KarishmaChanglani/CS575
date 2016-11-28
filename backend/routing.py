@@ -55,9 +55,15 @@ class UserView(FlaskView):
             data['count']
         ))
         result = server.server.get_task(task_id)
+        records = []
+        for machine, data in result['records'].items():
+            records.append({
+                "machine": machine,
+                "data": [{"datetime": r.timestamp, "data": r.data} for r in data]
+            })
         return response(
             True,
-            records=[{"machine": r.machine, "datetime": r.timestamp, "data": r.data} for r in result["records"]],
+            records=records,
             last=result["last"]
         )
 
@@ -85,7 +91,7 @@ class MachineView(FlaskView):
         result = server.server.get_task(task_id)
         return response(
             True,
-            records=[{"machine": r.machine, "datetime": r.timestamp, "data": r.data} for r in result["records"]],
+            records=[{"datetime": r.timestamp, "data": r.data} for r in result["records"]],
             last=result["last"]
         )
 

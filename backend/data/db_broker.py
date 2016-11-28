@@ -13,11 +13,10 @@ class Container:
 
 
 class Record:
-    def __init__(self, machine_id, datetime, category, data):
+    def __init__(self, datetime, category, data):
         self.data = data
         self.category = category
         self.timestamp = datetime
-        self.machine = machine_id
 
 
 class DBBroker(Broker):
@@ -30,7 +29,10 @@ class DBBroker(Broker):
 
     def visit_get_user_records(self, node):
         table = Blob_Table_Lite(database)
-        node.result = [Record(**r) for r in table.get_records_user(node.start, node.count, node.user_id, node.category)]
+        result = table.get_records_user(node.start, node.count, node.user_id, node.category)
+        for machine, data in result.items():
+            result[machine] = [Record(**r) for r in data]
+        node.result = result
         table.conn.close()
 
     def visit_get_machine_users(self, node):
@@ -49,12 +51,12 @@ class DBBroker(Broker):
 
     def visit_get_user_authorized(self, node):
         table = Authorization_Table_Lite(database)
-        node.result = any(node.user_id == row['user_id'] for row in table.get_users(node.machine_id))
+        node.result = any(int(node.user_id) == int(row['user_id']) for row in table.get_users(node.machine_id).values())
         table.conn.close()
 
     def visit_get_machine_records(self, node):
         table = Blob_Table_Lite(database)
-        node.result = [Record(**r) for r in table.get_records(node.start, node.count, node.machine_id, node.category)]
+        node.result = [Record(**r) for r in table.get_records(node.start, node.count, node.machine_id, node.category).values()]
         table.conn.close()
 
     def visit_get_machine(self, node):

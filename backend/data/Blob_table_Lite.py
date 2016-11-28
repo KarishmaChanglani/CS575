@@ -30,7 +30,6 @@ class Blob_Table_Lite:
         for row in conn.execute(query, [machine_id, category]):
             if i < start + count - 1 and i >= start - 1:
                 result[i] = dict()
-                result[i]['machine_id'] = row[0]
                 result[i]['datetime'] = row[1]
                 result[i]['category'] = row[2]
                 result[i]['data'] = row[3]
@@ -45,17 +44,17 @@ class Blob_Table_Lite:
         authorization_table.set_conn(conn)
         auths = authorization_table.get_machines(user_id)
         i = 0
-        result = []
+        result = {}
         for _, authorization in auths.items():
             machine_id = authorization['machine_id']
+            result[machine_id] = []
             for row in conn.execute(query, [machine_id, category]):
                 if i < start + count - 1 and i >= start - 1:
                     data = dict()
-                    data['machine_id'] = row[0]
                     data['datetime'] = row[1]
                     data['category'] = row[2]
                     data['data'] = row[3]
-                    result.append(data)
+                    result[machine_id].append(data)
                 i += 1
         return result
 
