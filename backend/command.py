@@ -48,6 +48,17 @@ class GetMachineCommand(Command, namedtuple("GetMachineCommand", ["machine", "us
     pass
 
 
+class GetMachineAllCommand(Command, namedtuple("GetMachineDataCommand", ["user", "machine", "start", "count"])):
+    """
+    Get records from a single machine from all categories, if the user has access
+    :param machine: The machine to get records for
+    :param user: The user's id
+    :param start: The first record to retrieve
+    :param count: The number of records to retrieve
+    """
+    pass
+
+
 class GetMachineDataCommand(Command, namedtuple("GetMachineDataCommand", ["user", "machine", "category", "start", "count"])):
     """
     Get records from a single machine, if the user has access

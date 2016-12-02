@@ -16,6 +16,7 @@ COMMAND_ROUTES = {
     "/user/data/split/": GetUserDataSplitCommand,
     "/machine/": GetMachineCommand,
     "/machine/data/": GetMachineDataCommand,
+    "/machine/all/": GetMachineAllCommand,
     "/save/auth/": SaveAuthCommand,
     "/save/data/": SaveRecordCommand
 }

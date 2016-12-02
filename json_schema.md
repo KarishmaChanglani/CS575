@@ -102,6 +102,41 @@ This works in a paging format where some number of records can be selected. Ther
 ```
 
 
+### Getting data for a single machine from all categories
+http://www.example.com:12345/machine/data/
+Similar to the above, but without a specified category. Result is split out by category.
+
+#### Request
+```
+{
+    "machine": "uuid",
+    "user": "user id",
+    "start": 0, // Record to start counting from
+    "count": 1000 // Number of records to retrieve
+}
+```
+
+#### Response
+```
+{
+    "last": 1000, // Number of last record retrieved
+    "records": [
+    {
+        "category": "category name"
+        "data": [
+        {
+            "datetime": "ISO 8601: YYYY-MM-DDThh:mm:ss.sss",
+            "data": "category dependent data encoding"
+        },
+        ...
+        ]
+    },
+    ...
+    ]
+}
+```
+
+
 ### Getting data for multiple machines
 http://www.example.com:12345/user/data/
 This is identical to the protocol for a single machine with the omission of the machine key from the request. Only machines the user is authorized to access will be returned in the response. This may be an empty list if the user does not have authorization to access any machine.

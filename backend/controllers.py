@@ -21,6 +21,7 @@ class Controller(metaclass=ABCMeta):  # TODO: Make this observable and notify a 
             "GetUserDataSplit": self.get_user_data,
             "GetMachine": self.get_machine,
             "GetMachineData": self.get_machine_data,
+            "GetMachineAll": self.get_machine_all,
             "SaveAuth": self.save_auth,
             "SaveRecord": self.save_record,
         }[command.type()](command)
@@ -104,6 +105,54 @@ class Controller(metaclass=ABCMeta):  # TODO: Make this observable and notify a 
             {
                 "datetime": "ISO 8601: YYYY-MM-DDThh:mm:ss.sss",
                 "data": "category dependent data encoding"
+            },
+            ...
+            ]
+        }
+        """
+        pass
+
+    @abstractmethod
+    def get_machine_all(self, command):
+        """
+        Gets records from a single machine if the user has access to it
+        :param command: Command object with values "user", "machine", "category", "start", and "count"
+        :return: {
+            "last": 1000, // Number of last record retrieved
+            "records": [
+            {
+                "category": "category name"
+                "data": [
+                {
+                    "datetime": "ISO 8601: YYYY-MM-DDThh:mm:ss.sss",
+                    "data": "category dependent data encoding"
+                },
+                ...
+                ]
+            },
+            ...
+            ]
+        }
+        """
+        pass
+
+    @abstractmethod
+    def get_machine_data(self, command):
+        """
+        Gets records from a single machine from all categories if the user has access to it
+        :param command: Command object with values "user", "machine", "start", and "count"
+        :return: {
+            "last": 1000, // Number of last record retrieved
+            "records": [
+            {
+                "category": "category name"
+                "data": [
+                {
+                    "datetime": "ISO 8601: YYYY-MM-DDThh:mm:ss.sss",
+                    "data": "category dependent data encoding"
+                },
+                ...
+                ]
             },
             ...
             ]

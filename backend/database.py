@@ -1,4 +1,5 @@
 from contextlib import closing
+from collections import defaultdict
 
 import sqlite3
 
@@ -124,7 +125,6 @@ class SqliteController(Controller):
             }
 
     def get_machine_data(self, command):
-        query = []
         with closing(sqlite3.connect(self.database)) as db:
             authorized = len(list(db.execute(
                 "SELECT 1 "
@@ -153,6 +153,43 @@ class SqliteController(Controller):
                 result['records'].append({
                     "datetime": row[0],
                     "data": row[1]
+                })
+            return result
+
+    def get_machine_all(self, command):
+        with closing(sqlite3.connect(self.database)) as db:
+            authorized = len(list(db.execute(
+                "SELECT 1 "
+                " FROM Authorization"
+                " WHERE User_Id = ?"
+                " AND Machine_Id = ?",
+                [command.user, command.machine]
+            )))
+            if not authorized:
+                raise AuthorizationError("User not authorized to access machine")
+            query = db.execute(
+                "SELECT category_name, time_stamp, data FROM Blobs"
+                " WHERE Machine_Id = ?"
+                " ORDER BY time_stamp"
+                " LIMIT ?"
+                " OFFSET ?",
+                [command.machine, command.count, command.start]
+            )
+            result = {
+                "last": command.start,
+                "records": []
+            }
+            tmp = defaultdict(list)
+            for row in query:
+                result['last'] += 1
+                tmp[row[0]].append({
+                    "datetime": row[1],
+                    "data": row[2]
+                })
+            for category, data in tmp.items():
+                result['records'].append({
+                    "category": category,
+                    "data": data
                 })
             return result
 
