@@ -17,6 +17,7 @@ class SqliteController(Controller):
     :param database: The database file to connect to, or ":memory:" to use an in-memory database. Defaults to
         config.DATABASE
     """
+
     def __init__(self, database=config.DATABASE):
         self.database = database
         self._setup()
@@ -82,6 +83,31 @@ class SqliteController(Controller):
                         "data": []
                     })
                 result['records'][-1]['data'].append({
+                    "datetime": row[1],
+                    "data": row[2]
+                })
+            return result
+
+    def get_user_data_combined(self, command):
+        with closing(sqlite3.connect(self.database)) as db:
+            query = db.execute(
+                "SELECT Blobs.Machine_Id, Blobs.time_stamp, Blobs.data FROM Blobs"
+                " LEFT JOIN Authorization ON Blobs.Machine_Id == Authorization.Machine_Id"
+                " WHERE Authorization.User_Id = ?"
+                " AND Blobs.category_name = ?"
+                " ORDER BY Blobs.Machine_Id, Blobs.time_stamp"
+                " LIMIT ?"
+                " OFFSET ?",
+                [command.user, command.category, command.count, command.start]
+            )
+            result = {
+                "last": command.start,
+                "records": []
+            }
+            for row in query:
+                result['last'] += 1
+                result['records'].append({
+                    "machine": row[0],
                     "datetime": row[1],
                     "data": row[2]
                 })

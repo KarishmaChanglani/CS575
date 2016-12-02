@@ -17,7 +17,8 @@ class Controller(metaclass=ABCMeta):  # TODO: Make this observable and notify a 
         """
         return {
             "GetUser": self.get_user,
-            "GetUserData": self.get_user_data,
+            "GetUserData": self.get_user_data_combined,
+            "GetUserDataSplit": self.get_user_data,
             "GetMachine": self.get_machine,
             "GetMachineData": self.get_machine_data,
             "SaveAuth": self.save_auth,
@@ -30,6 +31,25 @@ class Controller(metaclass=ABCMeta):  # TODO: Make this observable and notify a 
         Gets information about a single user
         :param command: Command object with values "user" and "password"
         :return: {"id": "user_id"}
+        """
+        pass
+
+    @abstractmethod
+    def get_user_data_combined(self, command):
+        """
+        Gets records that this user has access to in order without splitting by machine
+        :param command: Command object with values "user", "category", "start", and "count"
+        :return: {
+            "last": 1000, // Number of last record retrieved
+            "records": [
+            {
+                "machine": "uuid",
+                "datetime": "ISO 8601: YYYY-MM-DDThh:mm:ss.sss",
+                "data": "category dependent data encoding"
+            },
+            ...
+            ]
+        }
         """
         pass
 

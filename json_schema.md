@@ -132,6 +132,43 @@ This is identical to the protocol for a single machine with the omission of the 
 }
 ```
 
+
+### Getting data for multiple machines, split by machine
+http://www.example.com:12345/user/data/split/
+This is identical to the protocol above, just a different endpoint.
+
+#### Request
+```
+{
+    "category": "category name",
+    "user": "user id",
+    "start": 0, // Record to start counting from
+    "count": 1000 // Number of records to retrieve
+}
+```
+
+#### Response
+```
+{
+    "status": "success",
+    "last": 1000, // Number of last record retrieved
+    "records": [
+   {
+        "machine": "uuid",
+        "data": [
+            {
+                "datetime": "ISO 8601: YYYY-MM-DDThh:mm:ss.sss",
+                "data": "category dependent data encoding"
+            },
+            ...
+        ]
+    },
+    ...
+    ]
+}
+```
+
+
 ## Saving to the Database
 All saving operations will return a 201 Created HTTP response code on success and 400 Bad Request on failure. Additionally, the body of the response will follow this JSON format:
 ```

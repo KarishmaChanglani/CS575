@@ -35,6 +35,10 @@ class GetUserDataCommand(Command, namedtuple("GetUserDataCommand", ["user", "cat
     pass
 
 
+class GetUserDataSplitCommand(GetUserDataCommand):
+    pass
+
+
 class GetMachineCommand(Command, namedtuple("GetMachineCommand", ["machine", "user"])):
     """
     Get information for a given machine

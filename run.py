@@ -7,7 +7,7 @@ factory.app = FlaskApplication
 factory.server = SimpleServer
 factory.controller = SqliteController
 
-for command_cls, endpoint in COMMAND_ROUTES.items():
+for endpoint, command_cls in COMMAND_ROUTES.items():
     factory.add_route(endpoint, command_cls)
 
 app = factory.build()
