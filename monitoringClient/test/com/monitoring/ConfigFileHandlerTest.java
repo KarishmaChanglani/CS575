@@ -3,6 +3,8 @@ package com.monitoring;
 import org.junit.Assert;
 import org.junit.Test;
 
+import java.util.ArrayList;
+
 /**
  * Created by Patrick on 11/28/2016.
  */
@@ -31,18 +33,33 @@ public class ConfigFileHandlerTest {
     }
 
     @Test
-    public void setURL() throws Exception {
+    public void setURL() throws Exception
+    {
+        ConfigFileHandler config = new ConfigFileHandler();
+        String testURL = "35.164.138.44:5678"; //Extremely broken: will overwrite entered config
 
+        config.setURL(testURL);
+
+        Assert.assertEquals(config.getURL(), testURL);
     }
 
     @Test
-    public void getSensors() throws Exception {
+    public void getSensors() throws Exception
+    {
+        ConfigFileHandler config = new ConfigFileHandler();
 
+        Assert.assertTrue(config.getSensors() instanceof ArrayList);
     }
 
     @Test
-    public void addSensor() throws Exception {
+    public void addSensor_adds_item_to_getSensor_list() throws Exception    //not really a proper unit test
+    {
+        ConfigFileHandler config = new ConfigFileHandler();
+        String testString = IPAddressSensor.LABEL;
 
+        config.addSensor(testString);
+
+        Assert.assertTrue(config.getSensors().contains(testString));
     }
 
 }

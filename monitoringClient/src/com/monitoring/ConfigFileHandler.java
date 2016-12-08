@@ -60,7 +60,7 @@ public class ConfigFileHandler
             String line;
             while((line = br.readLine()) != null)
             {
-                if(line.startsWith(label))
+                if(line.startsWith(label))              //will get last item
                     rv = line.split(":", 2)[1];        //not very safe.
             }
             br.close();
@@ -84,7 +84,7 @@ public class ConfigFileHandler
             while((line = br.readLine()) != null)
             {
                 if(line.startsWith(label))
-                    rv.add(line);
+                    rv.add(line.split(":", 2)[1]);
             }
             br.close();
         }
@@ -113,7 +113,7 @@ public class ConfigFileHandler
 
     public void addSensor(String sensorType)
     {
-        writeConfig("SENSOR", IPAddressSensor.LABEL);
+        writeConfig("SENSOR", sensorType);      //no checking yet
     }
 
     public boolean hasUrl()

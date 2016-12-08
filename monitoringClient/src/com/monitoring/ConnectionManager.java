@@ -6,7 +6,6 @@ import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
-import java.net.ProtocolException;
 import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -20,6 +19,8 @@ public class ConnectionManager
     private JSONObject nextPostData;
     private String connectionURL;
     private String machineId;
+    private final String SAVE = "/save/data/";
+    private final String AUTH = "/save/auth/";
 
     public ConnectionManager(String url, String machineId)
     {
@@ -28,7 +29,12 @@ public class ConnectionManager
         nextPostData = makeNextPostData(machineId);
     }
 
-    private JSONObject makeNextPostData(String machineId)
+    public JSONObject getNextPostData()
+    {
+        return nextPostData;
+    }
+
+    JSONObject makeNextPostData(String machineId)
     {
         JSONObject rv = new JSONObject();
         rv.put("machine", machineId);
@@ -43,7 +49,12 @@ public class ConnectionManager
         nextPostData.put("data", value);
     }
 
-    private HttpURLConnection getPostingConnection(String url)
+    public void addKeyValue(String key, String value)
+    {
+        nextPostData.put(key,value);
+    }
+
+/*    private HttpURLConnection getPostingConnection(String url)
     {   HttpURLConnection connection = getNewConnection(url);
         try
         {
@@ -53,13 +64,14 @@ public class ConnectionManager
         {e.printStackTrace();}
         return connection;
     }
+*/
 
-    private HttpURLConnection getNewConnection(String urlString)
+    private HttpURLConnection getNewConnection(String urlString, String target)
     {
         try
         {
 //            URL url = new URL(urlString);
-            URL url = new URL("http", urlString.split(":")[0], Integer.parseInt(urlString.split(":")[1]), "/save/data/");
+            URL url = new URL("http", urlString.split(":")[0], Integer.parseInt(urlString.split(":")[1]), target);
             System.out.println(url);
             HttpURLConnection con = (HttpURLConnection) url.openConnection();
             return con;
@@ -74,7 +86,7 @@ public class ConnectionManager
 
     public void sendRequest()
     {
-        HttpURLConnection connection = getNewConnection(connectionURL);
+        HttpURLConnection connection = getNewConnection(connectionURL ,nextPostData.containsKey("user") ? AUTH : SAVE);
         try
         {
             if(!connection.getDoOutput())
