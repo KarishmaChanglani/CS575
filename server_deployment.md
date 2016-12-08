@@ -11,8 +11,8 @@ $ pip install flask-classy
 ```
 Currently there isn't a configuration file but the port can be changed manually in the run.py script. If the IP address is set to 0.0.0.0 then external devices can access the server through the specified port. If it's set to 127.0.0.1, only your local machine can access the server.
 
-## Database Setup
-TBD
+## Configuration
+The configuration file is a python file located in `./backend/static`. Comments there should explain sufficiently what is happening. You may need to create a folder called "instance" in the same directory as the run file if using the default configuration.
 
 ## Running the server
 ```
