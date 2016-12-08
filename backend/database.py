@@ -56,7 +56,10 @@ class SqliteController(Controller):
             db.commit()
 
     def get_user(self, command):
-        return {"id": 1}
+        try:
+            return {"id": int(command.user)}
+        except Exception:
+            raise UserError("Invalid user ID")
 
     def get_user_data(self, command):
         with closing(sqlite3.connect(self.database)) as db:

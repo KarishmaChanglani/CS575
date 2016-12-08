@@ -1,14 +1,28 @@
-from backend.server import FlaskApplication, SimpleServer, ApplicationFactory
+from backend.server import FlaskApplication, SimpleServer, ApplicationBuilder
 from backend.database import SqliteController
 from backend.config import COMMAND_ROUTES
 
-factory = ApplicationFactory()
-factory.app = FlaskApplication
-factory.server = SimpleServer
-factory.controller = SqliteController
 
-for endpoint, command_cls in COMMAND_ROUTES.items():
-    factory.add_route(endpoint, command_cls)
+class Main:
+    def __init__(self, builder):
+        self.builder = builder
+        self.app = None
 
-app = factory.build()
-app.run()
+    def construct(self):
+        self.builder.app = FlaskApplication
+        self.builder.server = SimpleServer
+        self.builder.controller = SqliteController
+
+        for endpoint, command_cls in COMMAND_ROUTES.items():
+            self.builder.add_route(endpoint, command_cls)
+
+        self.app = self.builder.build()
+
+    def run(self):
+        self.app.run()
+
+
+if __name__ == "__main__":
+    main = Main(ApplicationBuilder())
+    main.construct()
+    main.run()
