@@ -38,7 +38,7 @@ public class ConnectionManager
     {
         JSONObject rv = new JSONObject();
         rv.put("machine", machineId);
-        String date = new SimpleDateFormat("YYYY-MM-DD'T'hh:mm:ss.sss").format(new Date());
+        String date = new SimpleDateFormat("YYYY-MM-dd'T'hh:mm:ss.sss").format(new Date());
         rv.put("datetime", date);
         return rv;
     }
