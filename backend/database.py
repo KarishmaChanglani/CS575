@@ -68,7 +68,7 @@ class SqliteController(Controller):
                 " LEFT JOIN Authorization ON Blobs.Machine_Id == Authorization.Machine_Id"
                 " WHERE Authorization.User_Id = ?"
                 " AND Blobs.category_name = ?"
-                " ORDER BY Blobs.Machine_Id, Blobs.time_stamp"
+                " ORDER BY Blobs.Machine_Id, Blobs.time_stamp DESC"
                 " LIMIT ?"
                 " OFFSET ?",
                 [command.user, command.category, command.count, command.start]
@@ -99,7 +99,7 @@ class SqliteController(Controller):
                 " LEFT JOIN Authorization ON Blobs.Machine_Id == Authorization.Machine_Id"
                 " WHERE Authorization.User_Id = ?"
                 " AND Blobs.category_name = ?"
-                " ORDER BY Blobs.Machine_Id, Blobs.time_stamp"
+                " ORDER BY Blobs.Machine_Id, Blobs.time_stamp DESC"
                 " LIMIT ?"
                 " OFFSET ?",
                 [command.user, command.category, command.count, command.start]
@@ -142,7 +142,7 @@ class SqliteController(Controller):
                 "SELECT time_stamp, data FROM Blobs"
                 " WHERE Machine_Id = ?"
                 " AND category_name = ?"
-                " ORDER BY time_stamp"
+                " ORDER BY time_stamp DESC"
                 " LIMIT ?"
                 " OFFSET ?",
                 [command.machine, command.category, command.count, command.start]
@@ -173,7 +173,7 @@ class SqliteController(Controller):
             query = db.execute(
                 "SELECT category_name, time_stamp, data FROM Blobs"
                 " WHERE Machine_Id = ?"
-                " ORDER BY time_stamp"
+                " ORDER BY time_stamp DESC"
                 " LIMIT ?"
                 " OFFSET ?",
                 [command.machine, command.count, command.start]
