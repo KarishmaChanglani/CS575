@@ -60,9 +60,28 @@ class Application(metaclass=ABCMeta):
     def add_route(self, endpoint, command_cls):
         """
         Adds a route to the application. Should only be called by the application factory and not during runtime
-        :param endpoint:
-        :param command_cls:
-        :return:
+        :param endpoint: String endpoint. Ex: "/folder/location"
+        :param command_cls: Command class to be executed at this endpoint
+        """
+        pass
+
+    @abstractmethod
+    def make_route(self, endpoint, command_cls):
+        """
+        Create a route object for the endpoint
+        :param endpoint: String endpoint. Ex: "/folder/location"
+        :param command_cls: Command class to be executed at this endpoint
+        :return: Route object for this endpoint and command
+        """
+        pass
+
+    @abstractmethod
+    def make_serializer(self, endpoint, command_cls):
+        """
+        Create a serializer object for the endpoint
+        :param endpoint: String endpoint. Ex: "/folder/location"
+        :param command_cls: Command class to be executed at this endpoint
+        :return: Serializer object for this endpoint and command
         """
         pass
 
@@ -80,13 +99,19 @@ class FlaskApplication(Application):
     commands to be able to receive user data as JSON.
     :param server: The server object for handling execution of commands
     """
+
+    def make_route(self, endpoint, command_cls):
+        return FlaskRoute(command_cls, self.make_serializer(endpoint, command_cls), self.server)
+
+    def make_serializer(self, endpoint, command_cls):
+        return FlaskSerializer()
+
     def __init__(self, server):
         super().__init__(server)
         self.app = Flask(__name__)
 
     def add_route(self, endpoint, command_cls):
-        route = FlaskRoute(command_cls, FlaskSerializer(), self.server)
-        self.app.add_url_rule(endpoint, endpoint, route, methods=("POST",))
+        self.app.add_url_rule(endpoint, endpoint, self.make_route(endpoint, command_cls), methods=("POST",))
 
     def run(self):
         self.app.run("0.0.0.0", config.PORT)
@@ -97,7 +122,26 @@ class InitializationError(Exception):
     pass
 
 
-class ApplicationFactory:
+class AbstractApplicationBuilder(metaclass=ABCMeta):
+    @abstractmethod
+    def make_app(self, app_type):
+        pass
+
+    @abstractmethod
+    def make_server(self, server_type):
+        pass
+
+    @abstractmethod
+    def make_controller(self, controller_type):
+        pass
+
+    @abstractmethod
+    def build(self):
+        """Returns application object"""
+        pass
+
+
+class ApplicationBuilder(AbstractApplicationBuilder):
     """
     Builds an application and confirms that all of the components exist and are of the correct type
     """
@@ -106,6 +150,15 @@ class ApplicationFactory:
         self._server = None
         self._controller = None
         self._routes = {}
+
+    def make_app(self, app_type):
+        self.app = app_type
+
+    def make_server(self, server_type):
+        self.server = server_type
+
+    def make_controller(self, controller_type):
+        self.controller = controller_type
 
     @property
     def app(self):
@@ -116,7 +169,7 @@ class ApplicationFactory:
     @app.setter
     def app(self, app):
         if not issubclass(app, Application):
-            raise InitializationError("Tried to set '{}' as application")
+            raise InitializationError("Tried to set '{}' as application".format(str(app)))
         self._app = app
 
     @property
@@ -128,7 +181,7 @@ class ApplicationFactory:
     @server.setter
     def server(self, server):
         if not issubclass(server, Server):
-            raise InitializationError("Tried to set '{}' as server")
+            raise InitializationError("Tried to set '{}' as server".format(str(server)))
         self._server = server
 
     @property
@@ -140,7 +193,7 @@ class ApplicationFactory:
     @controller.setter
     def controller(self, controller):
         if not issubclass(controller, Controller):
-            raise InitializationError("Tried to set '{}' as controller")
+            raise InitializationError("Tried to set '{}' as controller".format(str(controller)))
         self._controller = controller
 
     def add_route(self, endpoint, command_cls):
