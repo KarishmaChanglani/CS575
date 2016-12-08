@@ -92,7 +92,6 @@ This works in a paging format where some number of records can be selected. Ther
     "last": 1000, // Number of last record retrieved
     "records": [
     {
-        "machine": "uuid",
         "datetime": "ISO 8601: YYYY-MM-DDThh:mm:ss.sss",
         "data": "category dependent data encoding"
     },
@@ -159,8 +158,13 @@ This is identical to the protocol for a single machine with the omission of the 
     "records": [
     {
         "machine": "uuid",
-        "datetime": "ISO 8601: YYYY-MM-DDThh:mm:ss.sss",
-        "data": "category dependent data encoding"
+        "data": [
+            {
+                "datetime": "ISO 8601: YYYY-MM-DDThh:mm:ss.sss",
+                "data": "category dependent data encoding"
+            },
+            ...
+        ]
     },
     ...
     ]
