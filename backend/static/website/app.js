@@ -42,6 +42,6 @@ mainApp.controller('HeaderController', function ($scope, AuthenticationService){
 
 mainApp.filter('dateInMillis', function() {
     return function(dateString) {
-        return Date.parse(dateString);
+        return moment(date).toDate();
     };
 });
