@@ -123,7 +123,7 @@ class SqliteController(Controller):
                 "name": command.machine,
                 "users": [row[0] for row in db.execute(
                         "SELECT User_Id from Authorization WHERE Machine_Id = ?",
-                        command.machine
+                        [command.machine]
                 )]
             }
 

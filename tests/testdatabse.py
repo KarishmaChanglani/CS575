@@ -127,7 +127,7 @@ class TestSqliteController(unittest.TestCase):
 
     def testget_machine_data(self):
         controller = SqliteController('test.db')
-        command = GetMachineDataCommand(1, 'machine', 0, 1)
+        command = GetMachineDataCommand(1, 'machine', 'category', 0, 1)
         command_auth = SaveAuthCommand('authorize', 1, 'machine')
         command_data = SaveRecordCommand("machine", "datetime", "category", "data")
         try:
@@ -149,7 +149,7 @@ class TestSqliteController(unittest.TestCase):
 
     def testget_machine_all(self):
         controller = SqliteController('test.db')
-        command = GetMachineDataCommand(1, 'machine', 0, 1)
+        command = GetMachineDataCommand(1, 'machine', 'category', 0, 1)
         command_auth = SaveAuthCommand('authorize', 1, 'machine')
         command_data = SaveRecordCommand("machine", "datetime", "category", "data")
         try:
