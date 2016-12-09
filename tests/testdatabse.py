@@ -60,23 +60,107 @@ class TestSqliteController(unittest.TestCase):
 
     def testget_user_data_and_save(self):
         controller = SqliteController('test.db')
-        command = GetUserDataSplitCommand(1,'category',1,1)
+        command = GetUserDataSplitCommand(1,'category',0,1)
         command_auth = SaveAuthCommand('authorize', 1, 'machine')
         command_data = SaveRecordCommand("machine", "datetime", "category", "data")
         try:
             controller.save_auth(command_auth)
-            controller.save_record(command_data)
         except sqlite3.IntegrityError:
             pass
 
+        try:
+            controller.save_record(command_data)
+        except:
+            pass
+
         data = controller.get_user_data(command)
-        print(data)
+
         for row in data['records']:
-            if row["machine"] == "machine" and row["datetime"][0]["data"] == "datetime" and row["category"] == "category" and row["data"][0]["data"] == "data":
-                self.assertTrue()
+            if row["machine"] == "machine" and row["data"][0]["datetime"] == "datetime" and row["data"][0]["data"] == "data":
+                self.assertTrue(True)
+                return
+        assert(False)
+
+    def testget_user_data_combined(self):
+        controller = SqliteController('test.db')
+        command = GetUserDataCommand(1,'category',0,1)
+        command_auth = SaveAuthCommand('authorize', 1, 'machine')
+        command_data = SaveRecordCommand("machine", "datetime", "category", "data")
+        try:
+            controller.save_auth(command_auth)
+        except sqlite3.IntegrityError:
+            pass
+
+        try:
+            controller.save_record(command_data)
+        except:
+            pass
+
+        data = controller.get_user_data_combined(command)
+        for row in data['records']:
+            if row['machine'] == 'machine' and row['datetime'] == 'datetime' and row['data'] == 'data':
+                assert(True)
                 return
 
         assert(False)
 
-    def testget_user_data_combined(self):
-        pass
+    def testget_machine(self):
+        controller = SqliteController('test.db')
+        command = GetMachineCommand('machine', 1)
+        command_auth = SaveAuthCommand('authorize', 1, 'machine')
+        command_data = SaveRecordCommand("machine", "datetime", "category", "data")
+        try:
+            controller.save_auth(command_auth)
+        except sqlite3.IntegrityError:
+            pass
+
+        try:
+            controller.save_record(command_data)
+        except:
+            pass
+
+        data = controller.get_machine(command)
+        if data["name"] == 'machine':
+            assert(True)
+        else:
+            assert(False)
+
+    def testget_machine_data(self):
+        controller = SqliteController('test.db')
+        command = GetMachineDataCommand(1, 'machine', 0, 1)
+        command_auth = SaveAuthCommand('authorize', 1, 'machine')
+        command_data = SaveRecordCommand("machine", "datetime", "category", "data")
+        try:
+            controller.save_auth(command_auth)
+        except sqlite3.IntegrityError:
+            pass
+
+        try:
+            controller.save_record(command_data)
+        except:
+            pass
+        data = controller.get_machine_data(command)
+        for row in data["records"]:
+            if row['data'] == 'data' and row['datetime'] == 'datetime':
+                assert(True)
+                return
+
+        assert(False)
+
+    def testget_machine_all(self):
+        controller = SqliteController('test.db')
+        command = GetMachineDataCommand(1, 'machine', 0, 1)
+        command_auth = SaveAuthCommand('authorize', 1, 'machine')
+        command_data = SaveRecordCommand("machine", "datetime", "category", "data")
+        try:
+            controller.save_auth(command_auth)
+        except sqlite3.IntegrityError:
+            pass
+
+        try:
+            controller.save_record(command_data)
+        except:
+            pass
+        data = controller.get_machine_data(command)
+        #for row in data['records']:
+
